@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,23 +13,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.biblioteca.bibliotecaejercicio.model.Libro;
-import cl.biblioteca.bibliotecaejercicio.service.LibroService;
 import cl.biblioteca.bibliotecaejercicio.dto.CreateLibroRequest;
 import cl.biblioteca.bibliotecaejercicio.dto.UpdateLibroRequest;
 import cl.biblioteca.bibliotecaejercicio.exception.ResourceNotFoundException;
 import cl.biblioteca.bibliotecaejercicio.mapper.LibroMapper;
-
+import cl.biblioteca.bibliotecaejercicio.model.Libro;
+import cl.biblioteca.bibliotecaejercicio.service.LibroService;
 import jakarta.validation.Valid;
 
 
 @RestController
-@RequestMapping("api/v2.1/libros")
+@RequestMapping("api/v3/libros")
 public class LibroController {
 
-    @Autowired
-    private LibroService libroService;
+    private final LibroService libroService;
 
+    public LibroController(LibroService libroService) {
+        this.libroService = libroService;
+    }
+    
     @GetMapping
     public ResponseEntity<List<Libro>> listarLibros(){
         List<Libro> libros = libroService.getLibros();
@@ -71,13 +72,5 @@ public class LibroController {
         return ResponseEntity.ok(total);
     }
 
-    @GetMapping("{isbn}")
-    public ResponseEntity<Libro> buscarLibroV2(@PathVariable String isbn) {
-        Libro libro = libroService.getLibroIsbn(isbn);
-        if(libro==null){
-            throw new ResourceNotFoundException("Isbn no corresponde a un libro");
-        }
-        return ResponseEntity.ok(libro);
-    }
     
 }

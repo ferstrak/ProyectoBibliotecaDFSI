@@ -81,5 +81,9 @@ public class LibroController {
         return ResponseEntity.ok(total);
     }
 
+    @GetMapping("/findByLibroCustom")
+    public Libro findByLibroCustom(@RequestParam String titulo) {
+        return libroService.findByLibroCustom(titulo);
+    }
     
 }

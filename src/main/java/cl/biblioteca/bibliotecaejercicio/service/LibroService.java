@@ -1,8 +1,10 @@
 package cl.biblioteca.bibliotecaejercicio.service;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import cl.biblioteca.bibliotecaejercicio.model.Libro;
 import cl.biblioteca.bibliotecaejercicio.repository.LibroRepository;
 
@@ -13,7 +15,6 @@ public class LibroService {
 
     public List<Libro> getLibros() {
         return libroRepository.findAll();
-
     }
 
     public Libro saveLibro(Libro libro) {
@@ -22,6 +23,10 @@ public class LibroService {
 
     public Libro getLibroId(int id) {
         return libroRepository.findById(id).orElse(null);
+    }
+
+    public List<Libro> getLibroAutor(String autor) {
+        return libroRepository.findByAutor(autor);
     }
 
     public Libro updateLibro(Libro libro) {

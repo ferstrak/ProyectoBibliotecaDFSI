@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
+import cl.biblioteca.bibliotecaejercicio.dto.PokemonResponse;
 
 import cl.biblioteca.bibliotecaejercicio.dto.CreateLibroRequest;
 import cl.biblioteca.bibliotecaejercicio.dto.UpdateLibroRequest;
@@ -28,11 +30,29 @@ import jakarta.validation.Valid;
 public class LibroController {
 
     private final LibroService libroService;
-
-    public LibroController(LibroService libroService) {
-        this.libroService = libroService;
+    private final WebClient pokeApiWebClient;
+ 
+ 
+       
+    public LibroController(LibroService libroService, WebClient pokeApiWebClient) {
+            this.libroService = libroService;
+            this.pokeApiWebClient = pokeApiWebClient;
     }
+
     
+
+     @GetMapping("/pokeapi")
+        public ResponseEntity<PokemonResponse> consultarPokemon(
+                        @RequestParam(name = "nombre") String nombre) {
+ 
+ 
+                PokemonResponse pokemon = pokeApiWebClient.get()
+                                .uri("/pokemon-species/{nombre}", nombre) // Endpoint más simple
+                                .retrieve().bodyToMono(PokemonResponse.class).block();
+ 
+ 
+                return ResponseEntity.ok(pokemon);
+        }
     @GetMapping
     public ResponseEntity<List<Libro>> listarLibros(){
         List<Libro> libros = libroService.getLibros();

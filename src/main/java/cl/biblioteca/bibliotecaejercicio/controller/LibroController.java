@@ -18,6 +18,7 @@ import cl.biblioteca.bibliotecaejercicio.dto.PokemonResponse;
 
 import cl.biblioteca.bibliotecaejercicio.dto.CreateLibroRequest;
 import cl.biblioteca.bibliotecaejercicio.dto.UpdateLibroRequest;
+import cl.biblioteca.bibliotecaejercicio.dto.LibroNoEncontrado;
 import cl.biblioteca.bibliotecaejercicio.exception.ResourceNotFoundException;
 import cl.biblioteca.bibliotecaejercicio.mapper.LibroMapper;
 import cl.biblioteca.bibliotecaejercicio.model.Libro;
@@ -60,22 +61,29 @@ public class LibroController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Libro> buscarLibro(@PathVariable int id){
+    public ResponseEntity<Libro> buscarLibro(@PathVariable(name="id") int id){
         Libro libro = libroService.getLibroId(id);
 
         if(libro==null){
+            
             throw new ResourceNotFoundException("ID no corresponde a un libro");
         }
         return ResponseEntity.ok(libro);
     }
+     //metodo 2
+    // if(libro==null){
+    //        LibroNoEncontrado libroNoEncontrado = new LibroNoEncontrado(                   //throw new globalExceptionHandler("libro no enocntrado");
+          //      "error 12", "libro no encontrado");
+           // return ResponseEntity.status(HttpStatus.NOT_FOUND).body(libroNoEncontrado); 
+          
+        
+       // }
+       // return ResponseEntity.ok(libro);
 
-    @GetMapping("{autor}")
-    public List<Libro> buscarLibroAutor(@RequestParam(name="autor", required=false) String autor){
-        if (autor != null && !autor.isEmpty()){
-            return libroService.getLibroAutor(autor);
-        }
-        return libroService.getLibros();
-    }
+    @GetMapping("/autor/{autor}")  
+public List<Libro> buscarLibroAutor(@PathVariable String autor){
+    return libroService.getLibroAutor(autor);
+}
 
     @PostMapping
     public ResponseEntity<Libro> agregaLibro(@Valid @RequestBody CreateLibroRequest request){
